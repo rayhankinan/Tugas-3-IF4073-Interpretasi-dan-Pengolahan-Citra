@@ -38,63 +38,58 @@ classdef GrayscaleImageWrapper < wrappers.BaseImageWrapper
         end
         
         % Get Edge Image using Laplacian Filter
-        function imageData = GetLaplacianEdgeImage(obj, threshold, alpha)
+        function imageData = GetLaplacianEdgeImage(obj, alpha)
             arguments
                 obj wrappers.GrayscaleImageWrapper
-                threshold double {mustBeGreaterThanOrEqual(threshold, 0), mustBeLessThanOrEqual(threshold, 1)}
                 alpha double {mustBeGreaterThanOrEqual(alpha, 0), mustBeLessThanOrEqual(alpha, 1)}
             end
             
             doubleImageData = im2double(obj.ImageData);
             h = fspecial('laplacian', alpha);
-            imageData = conv2(doubleImageData, h, 'same') > 255 * threshold;
+            imageData = conv2(doubleImageData, h, 'same');
         end
         
         % Get Edge Image using Laplacian of Gaussian Filter
-        function imageData = GetLaplacianOfGaussianEdgeImage(obj, threshold, hsize, sigma)
+        function imageData = GetLaplacianOfGaussianEdgeImage(obj, hsize, sigma)
             arguments
                 obj wrappers.GrayscaleImageWrapper
-                threshold double {mustBeGreaterThanOrEqual(threshold, 0), mustBeLessThanOrEqual(threshold, 1)}
-                hsize double {mustBeInteger, mustBePositive}
+                hsize double {mustBePositive, mustBeInteger}
                 sigma double {mustBeGreaterThanOrEqual(sigma, 0)}
             end
             
             doubleImageData = im2double(obj.ImageData);
             h = fspecial('log', hsize, sigma);
-            imageData = conv2(doubleImageData, h, 'same') > 255 * threshold;
+            imageData = conv2(doubleImageData, h, 'same');
         end
         
         % Get Edge Image using Sobel Filter
-        function imageData = GetSobelEdgeImage(obj, threshold)
+        function imageData = GetSobelEdgeImage(obj)
             arguments
                 obj wrappers.GrayscaleImageWrapper
-                threshold double {mustBeGreaterThanOrEqual(threshold, 0), mustBeLessThanOrEqual(threshold, 1)}
             end
             
             doubleImageData = im2double(obj.ImageData);
-            imageData = edge(doubleImageData, 'Sobel', threshold);
+            imageData = edge(doubleImageData, 'Sobel');
         end
         
         % Get Edge Image using Prewitt Filter
-        function imageData = GetPrewittEdgeImage(obj, threshold)
+        function imageData = GetPrewittEdgeImage(obj)
             arguments
                 obj wrappers.GrayscaleImageWrapper
-                threshold double {mustBeGreaterThanOrEqual(threshold, 0), mustBeLessThanOrEqual(threshold, 1)}
             end
             
             doubleImageData = im2double(obj.ImageData);
-            imageData = edge(doubleImageData, 'Prewitt', threshold);
+            imageData = edge(doubleImageData, 'Prewitt');
         end
         
         % Get Edge Image using Roberts Filter
-        function imageData = GetRobertsEdgeImage(obj, threshold)
+        function imageData = GetRobertsEdgeImage(obj)
             arguments
                 obj wrappers.GrayscaleImageWrapper
-                threshold double {mustBeGreaterThanOrEqual(threshold, 0), mustBeLessThanOrEqual(threshold, 1)}
             end
             
             doubleImageData = im2double(obj.ImageData);
-            imageData = edge(doubleImageData, 'Roberts', threshold);
+            imageData = edge(doubleImageData, 'Roberts');
         end
         
         % Get Edge Image using Canny Filter
@@ -113,22 +108,22 @@ classdef GrayscaleImageWrapper < wrappers.BaseImageWrapper
         function imageData = GetSegmentedImage(obj, edgeImageData, radius)
             arguments
                 obj wrappers.GrayscaleImageWrapper
-                edgeImageData uint8
-                radius double {mustBePositive, mustBeInteger}
+                edgeImageData double
+                radius double {mustBeNonnegative, mustBeInteger}
             end
+            
+            % Create black and white image from edge image
+            bwEdgeImageData = imbinarize(edgeImageData);
             
             % Dilate filled edge image
             se = strel('disk', radius);
-            dilatedImageData = imdilate(edgeImageData, se);
+            dilatedImageData = imdilate(bwEdgeImageData, se);
             
             % Fill holes in edge image
             filledEdgeImageData = imfill(dilatedImageData, 'holes');
             
-            % Create mask from filled edge image
-            filledEdgeImageMask = filledEdgeImageData > 0;
-            
             % Apply mask to original image
-            imageData = obj.ImageData .* uint8(filledEdgeImageMask);
+            imageData = obj.ImageData .* uint8(filledEdgeImageData);
         end
     end
 end
