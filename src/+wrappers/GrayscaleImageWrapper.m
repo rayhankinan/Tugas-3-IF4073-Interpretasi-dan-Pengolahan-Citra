@@ -38,33 +38,37 @@ classdef GrayscaleImageWrapper < wrappers.BaseImageWrapper
         end
         
         % Get Edge Image using Laplacian Filter
-        function imageData = GetLaplacianEdgeImage(obj, threshold)
+        function imageData = GetLaplacianEdgeImage(obj, threshold, alpha)
             arguments
                 obj wrappers.GrayscaleImageWrapper
-                threshold double
+                threshold double {mustBeGreaterThanOrEqual(threshold, 0), mustBeLessThanOrEqual(threshold, 1)}
+                alpha double {mustBeGreaterThanOrEqual(alpha, 0), mustBeLessThanOrEqual(alpha, 1)}
             end
             
             doubleImageData = im2double(obj.ImageData);
-            imageData = conv2(doubleImageData, double([0 1 0; 1 -4 1; 0 1 0]), 'same') > 255 * threshold;
+            h = fspecial('laplacian', alpha);
+            imageData = conv2(doubleImageData, h, 'same') > 255 * threshold;
         end
         
         % Get Edge Image using Laplacian of Gaussian Filter
-        function imageData = GetLaplacianOfGaussianEdgeImage(obj, threshold, sigma)
+        function imageData = GetLaplacianOfGaussianEdgeImage(obj, threshold, hsize, sigma)
             arguments
                 obj wrappers.GrayscaleImageWrapper
-                threshold double
-                sigma double
+                threshold double {mustBeGreaterThanOrEqual(threshold, 0), mustBeLessThanOrEqual(threshold, 1)}
+                hsize double {mustBeInteger, mustBePositive}
+                sigma double {mustBeGreaterThanOrEqual(sigma, 0)}
             end
             
             doubleImageData = im2double(obj.ImageData);
-            imageData = edge(doubleImageData, 'log', threshold, sigma);
+            h = fspecial('log', hsize, sigma);
+            imageData = conv2(doubleImageData, h, 'same') > 255 * threshold;
         end
         
         % Get Edge Image using Sobel Filter
         function imageData = GetSobelEdgeImage(obj, threshold)
             arguments
                 obj wrappers.GrayscaleImageWrapper
-                threshold double
+                threshold double {mustBeGreaterThanOrEqual(threshold, 0), mustBeLessThanOrEqual(threshold, 1)}
             end
             
             doubleImageData = im2double(obj.ImageData);
@@ -75,7 +79,7 @@ classdef GrayscaleImageWrapper < wrappers.BaseImageWrapper
         function imageData = GetPrewittEdgeImage(obj, threshold)
             arguments
                 obj wrappers.GrayscaleImageWrapper
-                threshold double
+                threshold double {mustBeGreaterThanOrEqual(threshold, 0), mustBeLessThanOrEqual(threshold, 1)}
             end
             
             doubleImageData = im2double(obj.ImageData);
@@ -86,7 +90,7 @@ classdef GrayscaleImageWrapper < wrappers.BaseImageWrapper
         function imageData = GetRobertsEdgeImage(obj, threshold)
             arguments
                 obj wrappers.GrayscaleImageWrapper
-                threshold double
+                threshold double {mustBeGreaterThanOrEqual(threshold, 0), mustBeLessThanOrEqual(threshold, 1)}
             end
             
             doubleImageData = im2double(obj.ImageData);
@@ -97,8 +101,8 @@ classdef GrayscaleImageWrapper < wrappers.BaseImageWrapper
         function imageData = GetCannyEdgeImage(obj, threshold, sigma)
             arguments
                 obj wrappers.GrayscaleImageWrapper
-                threshold double
-                sigma double
+                threshold double {mustBeGreaterThanOrEqual(threshold, 0), mustBeLessThanOrEqual(threshold, 1)}
+                sigma double {mustBeGreaterThanOrEqual(sigma, 0)}
             end
             
             doubleImageData = im2double(obj.ImageData);
@@ -110,7 +114,7 @@ classdef GrayscaleImageWrapper < wrappers.BaseImageWrapper
             arguments
                 obj wrappers.GrayscaleImageWrapper
                 edgeImageData uint8
-                radius double
+                radius double {mustBePositive, mustBeInteger}
             end
             
             % Dilate filled edge image

@@ -38,35 +38,39 @@ classdef ColoredImageWrapper < wrappers.BaseImageWrapper
         end
         
         % Get Edge Image using Laplacian Filter
-        function imageData = GetLaplacianEdgeImage(obj, threshold)
+        function imageData = GetLaplacianEdgeImage(obj, threshold, alpha)
             arguments
                 obj wrappers.ColoredImageWrapper
-                threshold double
+                threshold double {mustBeGreaterThanOrEqual(threshold, 0), mustBeLessThanOrEqual(threshold, 1)}
+                alpha double {mustBeGreaterThanOrEqual(alpha, 0), mustBeLessThanOrEqual(alpha, 1)}
             end
             
             grayImageData = rgb2gray(obj.ImageData);
             doubleImageData = im2double(grayImageData);
-            imageData = conv2(doubleImageData, double([0 1 0; 1 -4 1; 0 1 0]), 'same') > 255 * threshold;
+            h = fspecial('laplacian', alpha);
+            imageData = conv2(doubleImageData, h, 'same') > 255 * threshold;
         end
         
         % Get Edge Image using Laplacian of Gaussian Filter
-        function imageData = GetLaplacianOfGaussianEdgeImage(obj, threshold, sigma)
+        function imageData = GetLaplacianOfGaussianEdgeImage(obj, threshold, hsize, sigma)
             arguments
                 obj wrappers.ColoredImageWrapper
-                threshold double
-                sigma double
+                threshold double {mustBeGreaterThanOrEqual(threshold, 0), mustBeLessThanOrEqual(threshold, 1)}
+                hsize double {mustBePositive, mustBeInteger}
+                sigma double {mustBeGreaterThanOrEqual(sigma, 0)}
             end
             
             grayImageData = rgb2gray(obj.ImageData);
             doubleImageData = im2double(grayImageData);
-            imageData = edge(doubleImageData, 'log', threshold, sigma);
+            h = fspecial('log', hsize, sigma);
+            imageData = conv2(doubleImageData, h, 'same') > 255 * threshold;
         end
         
         % Get Edge Image using Sobel Filter
         function imageData = GetSobelEdgeImage(obj, threshold)
             arguments
                 obj wrappers.ColoredImageWrapper
-                threshold double
+                threshold double {mustBeGreaterThanOrEqual(threshold, 0), mustBeLessThanOrEqual(threshold, 1)}
             end
             
             grayImageData = rgb2gray(obj.ImageData);
@@ -78,7 +82,7 @@ classdef ColoredImageWrapper < wrappers.BaseImageWrapper
         function imageData = GetPrewittEdgeImage(obj, threshold)
             arguments
                 obj wrappers.ColoredImageWrapper
-                threshold double
+                threshold double {mustBeGreaterThanOrEqual(threshold, 0), mustBeLessThanOrEqual(threshold, 1)}
             end
             
             grayImageData = rgb2gray(obj.ImageData);
@@ -90,7 +94,7 @@ classdef ColoredImageWrapper < wrappers.BaseImageWrapper
         function imageData = GetRobertsEdgeImage(obj, threshold)
             arguments
                 obj wrappers.ColoredImageWrapper
-                threshold double
+                threshold double {mustBeGreaterThanOrEqual(threshold, 0), mustBeLessThanOrEqual(threshold, 1)}
             end
             
             grayImageData = rgb2gray(obj.ImageData);
@@ -102,8 +106,8 @@ classdef ColoredImageWrapper < wrappers.BaseImageWrapper
         function imageData = GetCannyEdgeImage(obj, threshold, sigma)
             arguments
                 obj wrappers.ColoredImageWrapper
-                threshold double
-                sigma double
+                threshold double {mustBeGreaterThanOrEqual(threshold, 0), mustBeLessThanOrEqual(threshold, 1)}
+                sigma double {mustBeGreaterThanOrEqual(sigma, 0)}
             end
             
             grayImageData = rgb2gray(obj.ImageData);
@@ -116,7 +120,7 @@ classdef ColoredImageWrapper < wrappers.BaseImageWrapper
             arguments
                 obj wrappers.ColoredImageWrapper
                 edgeImageData uint8
-                radius double
+                radius double {mustBePositive, mustBeInteger}
             end
             
             % Dilate filled edge image

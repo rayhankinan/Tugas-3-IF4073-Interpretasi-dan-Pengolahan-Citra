@@ -15,10 +15,10 @@ classdef (Abstract) BaseImageWrapper
         GetType(obj)
         
         % Get Edge Image using Laplacian Filter
-        GetLaplacianEdgeImage(obj, threshold)
+        GetLaplacianEdgeImage(obj, threshold, alpha)
         
         % Get Edge Image using Laplacian of Gaussian Filter
-        GetLaplacianOfGaussianEdgeImage(obj, threshold, sigma)
+        GetLaplacianOfGaussianEdgeImage(obj, threshold, hsize, sigma)
         
         % Get Edge Image using Sobel Filter
         GetSobelEdgeImage(obj, threshold)
