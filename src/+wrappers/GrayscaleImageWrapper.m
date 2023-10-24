@@ -44,7 +44,7 @@ classdef GrayscaleImageWrapper < wrappers.BaseImageWrapper
                 threshold double
             end
             
-            imageData = conv2(obj.ImageData, [0 1 0; 1 -4 1; 0 1 0], 'same') > threshold;
+            imageData = conv2(obj.ImageData, [0 1 0; 1 -4 1; 0 1 0], 'same') > 255 * threshold;
         end
         
         % Get Edge Image using Laplacian of Gaussian Filter

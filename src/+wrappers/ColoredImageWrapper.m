@@ -45,7 +45,7 @@ classdef ColoredImageWrapper < wrappers.BaseImageWrapper
             end
             
             grayImageData = rgb2gray(obj.ImageData);
-            imageData = conv2(grayImageData, [0 1 0; 1 -4 1; 0 1 0], 'same') > threshold;
+            imageData = conv2(grayImageData, [0 1 0; 1 -4 1; 0 1 0], 'same') > 255 * threshold;
         end
         
         % Get Edge Image using Laplacian of Gaussian Filter
