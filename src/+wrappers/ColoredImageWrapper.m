@@ -45,7 +45,8 @@ classdef ColoredImageWrapper < wrappers.BaseImageWrapper
             end
             
             grayImageData = rgb2gray(obj.ImageData);
-            imageData = conv2(grayImageData, [0 1 0; 1 -4 1; 0 1 0], 'same') > 255 * threshold;
+            doubleImageData = im2double(grayImageData);
+            imageData = conv2(doubleImageData, double([0 1 0; 1 -4 1; 0 1 0]), 'same') > 255 * threshold;
         end
         
         % Get Edge Image using Laplacian of Gaussian Filter
@@ -57,7 +58,8 @@ classdef ColoredImageWrapper < wrappers.BaseImageWrapper
             end
             
             grayImageData = rgb2gray(obj.ImageData);
-            imageData = edge(grayImageData, 'log', threshold, sigma);
+            doubleImageData = im2double(grayImageData);
+            imageData = edge(doubleImageData, 'log', threshold, sigma);
         end
         
         % Get Edge Image using Sobel Filter
@@ -68,7 +70,8 @@ classdef ColoredImageWrapper < wrappers.BaseImageWrapper
             end
             
             grayImageData = rgb2gray(obj.ImageData);
-            imageData = edge(grayImageData, 'Sobel', threshold);
+            doubleImageData = im2double(grayImageData);
+            imageData = edge(doubleImageData, 'Sobel', threshold);
         end
         
         % Get Edge Image using Prewitt Filter
@@ -79,7 +82,8 @@ classdef ColoredImageWrapper < wrappers.BaseImageWrapper
             end
             
             grayImageData = rgb2gray(obj.ImageData);
-            imageData = edge(grayImageData, 'Prewitt', threshold);
+            doubleImageData = im2double(grayImageData);
+            imageData = edge(doubleImageData, 'Prewitt', threshold);
         end
         
         % Get Edge Image using Roberts Filter
@@ -90,7 +94,8 @@ classdef ColoredImageWrapper < wrappers.BaseImageWrapper
             end
             
             grayImageData = rgb2gray(obj.ImageData);
-            imageData = edge(grayImageData, 'Roberts', threshold);
+            doubleImageData = im2double(grayImageData);
+            imageData = edge(doubleImageData, 'Roberts', threshold);
         end
         
         % Get Edge Image using Canny Filter
@@ -102,7 +107,8 @@ classdef ColoredImageWrapper < wrappers.BaseImageWrapper
             end
             
             grayImageData = rgb2gray(obj.ImageData);
-            imageData = edge(grayImageData, 'Canny', threshold, sigma);
+            doubleImageData = im2double(grayImageData);
+            imageData = edge(doubleImageData, 'Canny', threshold, sigma);
         end
         
         % Get Segmented Image using Edge Detection

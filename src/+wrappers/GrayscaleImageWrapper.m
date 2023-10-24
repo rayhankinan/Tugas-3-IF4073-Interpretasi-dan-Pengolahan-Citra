@@ -44,7 +44,8 @@ classdef GrayscaleImageWrapper < wrappers.BaseImageWrapper
                 threshold double
             end
             
-            imageData = conv2(obj.ImageData, [0 1 0; 1 -4 1; 0 1 0], 'same') > 255 * threshold;
+            doubleImageData = im2double(obj.ImageData);
+            imageData = conv2(doubleImageData, double([0 1 0; 1 -4 1; 0 1 0]), 'same') > 255 * threshold;
         end
         
         % Get Edge Image using Laplacian of Gaussian Filter
@@ -55,7 +56,8 @@ classdef GrayscaleImageWrapper < wrappers.BaseImageWrapper
                 sigma double
             end
             
-            imageData = edge(obj.ImageData, 'log', threshold, sigma);
+            doubleImageData = im2double(obj.ImageData);
+            imageData = edge(doubleImageData, 'log', threshold, sigma);
         end
         
         % Get Edge Image using Sobel Filter
@@ -65,7 +67,8 @@ classdef GrayscaleImageWrapper < wrappers.BaseImageWrapper
                 threshold double
             end
             
-            imageData = edge(obj.ImageData, 'Sobel', threshold);
+            doubleImageData = im2double(obj.ImageData);
+            imageData = edge(doubleImageData, 'Sobel', threshold);
         end
         
         % Get Edge Image using Prewitt Filter
@@ -75,7 +78,8 @@ classdef GrayscaleImageWrapper < wrappers.BaseImageWrapper
                 threshold double
             end
             
-            imageData = edge(obj.ImageData, 'Prewitt', threshold);
+            doubleImageData = im2double(obj.ImageData);
+            imageData = edge(doubleImageData, 'Prewitt', threshold);
         end
         
         % Get Edge Image using Roberts Filter
@@ -85,7 +89,8 @@ classdef GrayscaleImageWrapper < wrappers.BaseImageWrapper
                 threshold double
             end
             
-            imageData = edge(obj.ImageData, 'Roberts', threshold);
+            doubleImageData = im2double(obj.ImageData);
+            imageData = edge(doubleImageData, 'Roberts', threshold);
         end
         
         % Get Edge Image using Canny Filter
@@ -96,9 +101,8 @@ classdef GrayscaleImageWrapper < wrappers.BaseImageWrapper
                 sigma double
             end
             
-            obj.ImageData
-            
-            imageData = edge(obj.ImageData, 'Canny', threshold, sigma);
+            doubleImageData = im2double(obj.ImageData);
+            imageData = edge(doubleImageData, 'Canny', threshold, sigma);
         end
         
         % Get Segmented Image using Edge Detection
