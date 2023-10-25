@@ -45,9 +45,7 @@ classdef ColoredImageWrapper < wrappers.BaseImageWrapper
             end
             
             grayImageData = rgb2gray(obj.ImageData);
-            doubleImageData = im2double(grayImageData);
-            h = fspecial('laplacian', alpha);
-            imageData = conv2(doubleImageData, h, 'same');
+            imageData = utils.Operator.ApplyLaplacian(grayImageData, alpha);
         end
         
         % Get Edge Image using Laplacian of Gaussian Filter
@@ -55,13 +53,11 @@ classdef ColoredImageWrapper < wrappers.BaseImageWrapper
             arguments
                 obj wrappers.ColoredImageWrapper
                 hsize double {mustBePositive, mustBeInteger}
-                sigma double {mustBeGreaterThanOrEqual(sigma, 0)}
+                sigma double {mustBePositive}
             end
             
             grayImageData = rgb2gray(obj.ImageData);
-            doubleImageData = im2double(grayImageData);
-            h = fspecial('log', hsize, sigma);
-            imageData = conv2(doubleImageData, h, 'same');
+            imageData = utils.Operator.ApplyLaplacianOfGaussian(grayImageData, hsize, sigma);
         end
         
         % Get Edge Image using Sobel Filter
@@ -102,7 +98,7 @@ classdef ColoredImageWrapper < wrappers.BaseImageWrapper
             arguments
                 obj wrappers.ColoredImageWrapper
                 threshold double {mustBeGreaterThanOrEqual(threshold, 0), mustBeLessThanOrEqual(threshold, 1)}
-                sigma double {mustBeGreaterThanOrEqual(sigma, 0)}
+                sigma double {mustBePositive}
             end
             
             grayImageData = rgb2gray(obj.ImageData);
@@ -118,18 +114,7 @@ classdef ColoredImageWrapper < wrappers.BaseImageWrapper
                 radius double {mustBeNonnegative, mustBeInteger}
             end
             
-            % Create black and white image from edge image
-            bwEdgeImageData = imbinarize(edgeImageData);
-            
-            % Dilate filled edge image
-            se = strel('disk', radius);
-            dilatedImageData = imdilate(bwEdgeImageData, se);
-            
-            % Fill holes in edge image
-            filledEdgeImageData = imfill(dilatedImageData, 'holes');
-            
-            % Apply mask to original image
-            imageData = obj.ImageData .* uint8(filledEdgeImageData);
+            imageData = utils.Operator.ApplySegmentation(obj.ImageData, edgeImageData, radius);
         end
     end
 end
