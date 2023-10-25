@@ -64,8 +64,7 @@ classdef GrayscaleImageWrapper < wrappers.BaseImageWrapper
                 obj wrappers.GrayscaleImageWrapper
             end
             
-            doubleImageData = im2double(obj.ImageData);
-            imageData = edge(doubleImageData, 'Sobel');
+            imageData = utils.Operator.ApplySobel(obj.ImageData);
         end
         
         % Get Edge Image using Prewitt Filter
@@ -74,8 +73,7 @@ classdef GrayscaleImageWrapper < wrappers.BaseImageWrapper
                 obj wrappers.GrayscaleImageWrapper
             end
             
-            doubleImageData = im2double(obj.ImageData);
-            imageData = edge(doubleImageData, 'Prewitt');
+            imageData = utils.Operator.ApplyPrewitt(obj.ImageData);
         end
         
         % Get Edge Image using Roberts Filter
@@ -84,8 +82,7 @@ classdef GrayscaleImageWrapper < wrappers.BaseImageWrapper
                 obj wrappers.GrayscaleImageWrapper
             end
             
-            doubleImageData = im2double(obj.ImageData);
-            imageData = edge(doubleImageData, 'Roberts');
+            imageData = utils.Operator.ApplyRoberts(obj.ImageData);
         end
         
         % Get Edge Image using Canny Filter

@@ -27,6 +27,45 @@ classdef Operator
             binarizeData = imbinarize(resultData);
         end
         
+        function binarizeData = ApplySobel(imageData)
+            arguments
+                imageData uint8
+            end
+            
+            doubleImageData = im2double(imageData);
+            h = fspecial('sobel');
+            v = h';
+            doubleResultData = sqrt(conv2(doubleImageData, h, 'same') .^ 2 + conv2(doubleImageData, v, 'same') .^ 2);
+            resultData = im2uint8(doubleResultData);
+            binarizeData = imbinarize(resultData);
+        end
+        
+        function binarizeData = ApplyPrewitt(imageData)
+            arguments
+                imageData uint8
+            end
+            
+            doubleImageData = im2double(imageData);
+            h = fspecial('prewitt');
+            v = h';
+            doubleResultData = sqrt(conv2(doubleImageData, h, 'same') .^ 2 + conv2(doubleImageData, v, 'same') .^ 2);
+            resultData = im2uint8(doubleResultData);
+            binarizeData = imbinarize(resultData);
+        end
+        
+        function binarizeData = ApplyRoberts(imageData)
+            arguments
+                imageData uint8
+            end
+            
+            doubleImageData = im2double(imageData);
+            rPlus = [1 0; 0 -1];
+            rMinus = [0 1; -1 0];
+            doubleResultData = abs(conv2(doubleImageData, rPlus, 'same')) + abs(conv2(doubleImageData, rMinus, 'same'));
+            resultData = im2uint8(doubleResultData);
+            binarizeData = imbinarize(resultData);
+        end
+        
         function segmentedData = ApplySegmentation(imageData, edgeImageData, radius)
             arguments
                 imageData uint8

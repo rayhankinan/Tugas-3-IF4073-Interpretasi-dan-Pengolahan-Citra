@@ -67,8 +67,7 @@ classdef ColoredImageWrapper < wrappers.BaseImageWrapper
             end
             
             grayImageData = rgb2gray(obj.ImageData);
-            doubleImageData = im2double(grayImageData);
-            imageData = edge(doubleImageData, 'Sobel');
+            imageData = utils.Operator.ApplySobel(grayImageData);
         end
         
         % Get Edge Image using Prewitt Filter
@@ -78,8 +77,7 @@ classdef ColoredImageWrapper < wrappers.BaseImageWrapper
             end
             
             grayImageData = rgb2gray(obj.ImageData);
-            doubleImageData = im2double(grayImageData);
-            imageData = edge(doubleImageData, 'Prewitt');
+            imageData = utils.Operator.ApplyPrewitt(grayImageData);
         end
         
         % Get Edge Image using Roberts Filter
@@ -89,8 +87,7 @@ classdef ColoredImageWrapper < wrappers.BaseImageWrapper
             end
             
             grayImageData = rgb2gray(obj.ImageData);
-            doubleImageData = im2double(grayImageData);
-            imageData = edge(doubleImageData, 'Roberts');
+            imageData = utils.Operator.ApplyRoberts(grayImageData);
         end
         
         % Get Edge Image using Canny Filter
