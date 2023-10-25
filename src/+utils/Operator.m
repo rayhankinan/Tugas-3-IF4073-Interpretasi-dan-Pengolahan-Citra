@@ -1,69 +1,114 @@
 classdef Operator
     methods (Static)
-        function binarizeData = ApplyLaplacian(imageData, alpha)
+        function paddedData = ApplyLaplacian(imageData, alpha)
             arguments
                 imageData uint8
                 alpha double {mustBeGreaterThanOrEqual(alpha, 0), mustBeLessThanOrEqual(alpha, 1)}
             end
             
+            % Calculate Laplacian
             doubleImageData = im2double(imageData);
             h = fspecial('laplacian', alpha);
-            doubleResultData = conv2(doubleImageData, h, 'same');
+            doubleResultData = conv2(doubleImageData, h, 'valid');
             resultData = im2uint8(doubleResultData);
             binarizeData = imbinarize(resultData);
+            
+            % Pad result
+            [imageHeight, imageWidth] = size(imageData);
+            [hHeight, hWidth] = size(h);
+            padHeight = floor(hHeight / 2);
+            padWidth = floor(hWidth / 2);
+            paddedData = zeros(imageHeight, imageWidth);
+            paddedData(padHeight + 1:imageHeight - padHeight, padWidth + 1:imageWidth - padWidth) = binarizeData;
         end
         
-        function binarizeData = ApplyLaplacianOfGaussian(imageData, hsize, sigma)
+        function paddedData = ApplyLaplacianOfGaussian(imageData, hsize, sigma)
             arguments
                 imageData uint8
                 hsize double {mustBePositive, mustBeInteger}
                 sigma double {mustBePositive}
             end
             
+            % Calculate Laplacian of Gaussian
             doubleImageData = im2double(imageData);
             h = fspecial('log', hsize, sigma);
-            doubleResultData = conv2(doubleImageData, h, 'same');
+            doubleResultData = conv2(doubleImageData, h, 'valid');
             resultData = im2uint8(doubleResultData);
             binarizeData = imbinarize(resultData);
+            
+            % Pad result
+            [imageHeight, imageWidth] = size(imageData);
+            [hHeight, hWidth] = size(h);
+            padHeight = floor(hHeight / 2);
+            padWidth = floor(hWidth / 2);
+            paddedData = zeros(imageHeight, imageWidth);
+            paddedData(padHeight + 1:imageHeight - padHeight, padWidth + 1:imageWidth - padWidth) = binarizeData;
         end
         
-        function binarizeData = ApplySobel(imageData)
+        function paddedData = ApplySobel(imageData)
             arguments
                 imageData uint8
             end
             
+            % Calculate Sobel
             doubleImageData = im2double(imageData);
             h = fspecial('sobel');
             v = h';
-            doubleResultData = sqrt(conv2(doubleImageData, h, 'same') .^ 2 + conv2(doubleImageData, v, 'same') .^ 2);
+            doubleResultData = sqrt(conv2(doubleImageData, h, 'valid') .^ 2 + conv2(doubleImageData, v, 'valid') .^ 2);
             resultData = im2uint8(doubleResultData);
             binarizeData = imbinarize(resultData);
+            
+            % Pad result
+            [imageHeight, imageWidth] = size(imageData);
+            [hHeight, hWidth] = size(h);
+            padHeight = floor(hHeight / 2);
+            padWidth = floor(hWidth / 2);
+            paddedData = zeros(imageHeight, imageWidth);
+            paddedData(padHeight + 1:imageHeight - padHeight, padWidth + 1:imageWidth - padWidth) = binarizeData;
         end
         
-        function binarizeData = ApplyPrewitt(imageData)
+        function paddedData = ApplyPrewitt(imageData)
             arguments
                 imageData uint8
             end
             
+            % Calculate Prewitt
             doubleImageData = im2double(imageData);
             h = fspecial('prewitt');
             v = h';
-            doubleResultData = sqrt(conv2(doubleImageData, h, 'same') .^ 2 + conv2(doubleImageData, v, 'same') .^ 2);
+            doubleResultData = sqrt(conv2(doubleImageData, h, 'valid') .^ 2 + conv2(doubleImageData, v, 'valid') .^ 2);
             resultData = im2uint8(doubleResultData);
             binarizeData = imbinarize(resultData);
+            
+            % Pad result
+            [imageHeight, imageWidth] = size(imageData);
+            [hHeight, hWidth] = size(h);
+            padHeight = floor(hHeight / 2);
+            padWidth = floor(hWidth / 2);
+            paddedData = zeros(imageHeight, imageWidth);
+            paddedData(padHeight + 1:imageHeight - padHeight, padWidth + 1:imageWidth - padWidth) = binarizeData;
         end
         
-        function binarizeData = ApplyRoberts(imageData)
+        function paddedData = ApplyRoberts(imageData)
             arguments
                 imageData uint8
             end
             
+            % Calculate Roberts
             doubleImageData = im2double(imageData);
             rPlus = [1 0; 0 -1];
             rMinus = [0 1; -1 0];
-            doubleResultData = abs(conv2(doubleImageData, rPlus, 'same')) + abs(conv2(doubleImageData, rMinus, 'same'));
+            doubleResultData = sqrt(conv2(doubleImageData, rPlus, 'valid') .^ 2 + conv2(doubleImageData, rMinus, 'valid') .^ 2);
             resultData = im2uint8(doubleResultData);
             binarizeData = imbinarize(resultData);
+            
+            % Pad result
+            [imageHeight, imageWidth] = size(imageData);
+            [hHeight, hWidth] = size(rPlus);
+            padHeight = floor(hHeight / 2);
+            padWidth = floor(hWidth / 2);
+            paddedData = zeros(imageHeight, imageWidth);
+            paddedData(padHeight:imageHeight - padHeight, padWidth:imageWidth - padWidth) = binarizeData;
         end
         
         function segmentedData = ApplySegmentation(imageData, edgeImageData, radius)
