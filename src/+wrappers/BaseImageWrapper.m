@@ -33,6 +33,6 @@ classdef (Abstract) BaseImageWrapper
         GetCannyEdgeImage(obj, threshold, sigma)
         
         % Get Segmented Image using Edge Detection
-        GetSegmentedImage(obj, edgeImageData, radius)
+        GetSegmentedImage(obj, edgeImageData, radius, minimumPixel)
     end
 end

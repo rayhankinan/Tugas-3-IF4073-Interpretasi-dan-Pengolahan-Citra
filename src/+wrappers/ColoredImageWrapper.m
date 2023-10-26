@@ -104,14 +104,15 @@ classdef ColoredImageWrapper < wrappers.BaseImageWrapper
         end
         
         % Get Segmented Image using Edge Detection
-        function imageData = GetSegmentedImage(obj, edgeImageData, radius)
+        function imageData = GetSegmentedImage(obj, edgeImageData, radius, minimumPixel)
             arguments
                 obj wrappers.ColoredImageWrapper
                 edgeImageData double
                 radius double {mustBeNonnegative, mustBeInteger}
+                minimumPixel double {mustBeNonnegative, mustBeInteger}
             end
             
-            imageData = utils.Operator.ApplySegmentation(obj.ImageData, edgeImageData, radius);
+            imageData = utils.Operator.ApplySegmentation(obj.ImageData, edgeImageData, radius, minimumPixel);
         end
     end
 end

@@ -111,22 +111,34 @@ classdef Operator
             paddedData(padHeight:imageHeight - padHeight, padWidth:imageWidth - padWidth) = binarizeData;
         end
         
-        function segmentedData = ApplySegmentation(imageData, edgeImageData, radius)
+        function segmentedData = ApplySegmentation(imageData, edgeImageData, radius, minimumPixel)
             arguments
                 imageData uint8
                 edgeImageData logical
                 radius double {mustBeNonnegative, mustBeInteger}
+                minimumPixel double {mustBeNonnegative, mustBeInteger}
             end
             
-            % Dilate filled edge image
+            % Create structuring element
             se = strel('disk', radius);
-            dilatedImageData = imdilate(edgeImageData, se);
+            
+            % Close the edge image
+            closedImageData = imclose(edgeImageData, se);
+            
+            % Remove border objects
+            borderImageData = imclearborder(closedImageData);
             
             % Fill holes in edge image
-            filledEdgeImageData = imfill(dilatedImageData, 'holes');
+            filledEdgeImageData = imfill(borderImageData, 'holes');
+            
+            % Open the edge image
+            openedImageData = imopen(filledEdgeImageData, se);
+            
+            % Remove small objects
+            removedImageData = bwareaopen(openedImageData, minimumPixel);
             
             % Apply mask to original image
-            segmentedData = imageData .* uint8(filledEdgeImageData);
+            segmentedData = imageData .* uint8(removedImageData);
         end
     end
 end
