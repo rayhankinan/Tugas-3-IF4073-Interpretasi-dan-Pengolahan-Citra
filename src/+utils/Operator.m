@@ -42,7 +42,12 @@ classdef Operator
             padHeight = floor(hHeight / 2);
             padWidth = floor(hWidth / 2);
             paddedData = zeros(imageHeight, imageWidth);
-            paddedData(padHeight + 1:imageHeight - padHeight, padWidth + 1:imageWidth - padWidth) = binarizeData;
+            
+            if mod(hHeight, 2) == 0
+                paddedData(padHeight:imageHeight - padHeight, padWidth:imageWidth - padWidth) = binarizeData;
+            else
+                paddedData(padHeight + 1:imageHeight - padHeight, padWidth + 1:imageWidth - padWidth) = binarizeData;
+            end
         end
         
         function paddedData = ApplySobel(imageData)
